@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { routeTree } from "./routeTree.gen";
+import { seedExercises } from "./lib/exercises";
 
 const router = createRouter({ routeTree });
 declare module "@tanstack/react-router" {
@@ -10,6 +11,8 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
+seedExercises();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
