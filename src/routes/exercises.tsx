@@ -1,52 +1,82 @@
 import ExerciseRow from "@/components/exercise-row";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/db/db";
 import { createFileRoute } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/exercises")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const exercises = useLiveQuery(() => db.exercises.toArray());
+  const exercisesRaw = useLiveQuery(() => db.exercises.toArray());
 
-  const grouped = exercises
-    ? Object.entries(
-        exercises.reduce<Record<string, typeof exercises>>((acc, ex) => {
-          const group = ex.primaryMuscles[0];
+  const [search, setSearch] = useState("");
+  const [searchDebounced, setSearchDebounced] = useState("");
+  const searchLower = searchDebounced.toLowerCase();
 
-          if (!acc[group]) acc[group] = [];
+  useEffect(() => {
+    const t = setTimeout(() => setSearchDebounced(search), 150);
+    return () => clearTimeout(t);
+  }, [search]);
 
-          acc[group].push(ex);
+  const exercises = exercisesRaw?.reduce<Record<string, typeof exercisesRaw>>((acc, ex) => {
+    if (
+      !ex.primaryMuscles[0].toLowerCase().includes(searchLower) &&
+      !ex.name.toLowerCase().includes(searchLower)
+    ) {
+      return acc;
+    }
 
-          return acc;
-        }, {}),
-      ).sort(([a], [b]) => a.localeCompare(b))
-    : null;
+    const group = ex.primaryMuscles[0];
+
+    if (!acc[group]) acc[group] = [];
+
+    acc[group].push(ex);
+
+    return acc;
+  }, {});
 
   return (
     <main>
       <div className="flex flex-col gap-6 px-4">
-        {exercises === undefined ? (
+        {!exercisesRaw || !exercises ? (
           <div className="flex justify-center py-16">
-            <div className="border-primary/30 border-t-primary h-6 w-6 animate-spin rounded-full border-2" />
+            <Spinner />
           </div>
         ) : (
-          grouped?.map(([group, items]) => (
-            <div key={group} className="">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="bg-muted h-px flex-1" />
-                <span className="text-primary-foreground text-xs uppercase">{group}</span>
-                <div className="bg-muted h-px flex-1" />
-              </div>
+          <>
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search"
+              className="w-full"
+            />
 
-              <ul className="bg-card border-muted rounded-lg border">
-                {items.map((ex) => (
-                  <ExerciseRow key={ex.id} name={ex.name} />
-                ))}
-              </ul>
-            </div>
-          ))
+            {search !== searchDebounced ? (
+              <div className="flex justify-center py-16">
+                <Spinner />
+              </div>
+            ) : (
+              Object.entries(exercises).map(([group, items]) => (
+                <div key={group} className="">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="bg-muted h-px flex-1" />
+                    <span className="text-primary-foreground text-xs uppercase">{group}</span>
+                    <div className="bg-muted h-px flex-1" />
+                  </div>
+
+                  <ul className="bg-card border-muted rounded-lg border">
+                    {items.map((ex) => (
+                      <ExerciseRow key={ex.id} name={ex.name} />
+                    ))}
+                  </ul>
+                </div>
+              ))
+            )}
+          </>
         )}
       </div>
     </main>
