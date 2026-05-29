@@ -40,45 +40,43 @@ function RouteComponent() {
   }, {});
 
   return (
-    <main>
-      <div className="flex flex-col gap-6 px-4">
-        {!exercisesRaw || !exercises ? (
-          <div className="flex justify-center py-16">
-            <Spinner />
-          </div>
-        ) : (
-          <>
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search"
-              className="w-full"
-            />
+    <>
+      {!exercisesRaw || !exercises ? (
+        <div className="flex justify-center py-16">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search"
+            className="w-full"
+          />
 
-            {search !== searchDebounced ? (
-              <div className="flex justify-center py-16">
-                <Spinner />
-              </div>
-            ) : (
-              Object.entries(exercises).map(([group, items]) => (
-                <div key={group} className="">
-                  <div className="mb-3 flex items-center gap-3">
-                    <div className="bg-muted h-px flex-1" />
-                    <span className="text-primary-foreground text-xs uppercase">{group}</span>
-                    <div className="bg-muted h-px flex-1" />
-                  </div>
-
-                  <ul className="bg-card border-muted rounded-lg border">
-                    {items.map((ex) => (
-                      <ExerciseRow key={ex.id} name={ex.name} />
-                    ))}
-                  </ul>
+          {search !== searchDebounced ? (
+            <div className="flex justify-center py-16">
+              <Spinner />
+            </div>
+          ) : (
+            Object.entries(exercises).map(([group, items]) => (
+              <div key={group} className="">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="bg-muted h-px flex-1" />
+                  <span className="text-primary-foreground text-xs uppercase">{group}</span>
+                  <div className="bg-muted h-px flex-1" />
                 </div>
-              ))
-            )}
-          </>
-        )}
-      </div>
-    </main>
+
+                <ul className="bg-card border-muted rounded-lg border">
+                  {items.map((ex) => (
+                    <ExerciseRow key={ex.id} name={ex.name} />
+                  ))}
+                </ul>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </>
   );
 }

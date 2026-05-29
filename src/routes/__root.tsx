@@ -4,9 +4,9 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 export const Route = createRootRoute({
   component: () => (
     <div className="flex h-screen flex-col">
-      <div className="flex-1 overflow-auto py-4">
+      <main className="flex-1 overflow-auto p-4">
         <Outlet />
-      </div>
+      </main>
 
       <Dock />
     </div>
