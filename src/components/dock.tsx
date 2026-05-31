@@ -7,7 +7,7 @@ export default function Dock() {
 
   const items = [
     {
-      path: "/",
+      path: "/sessions",
       label: "Sessions",
       icon: CalendarDays,
     },
