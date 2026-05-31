@@ -1,10 +1,10 @@
 import CreateSession from "@/components/create-session";
 import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/db/db";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 
-export const Route = createFileRoute("/sessions")({
+export const Route = createFileRoute("/sessions/")({
   component: RouteComponent,
 });
 
@@ -22,7 +22,11 @@ function RouteComponent() {
       ) : (
         <ul>
           {sessions.map((session) => (
-            <li key={session.id}>{session.date}</li>
+            <li key={session.id}>
+              <Link to="/sessions/$id" params={{ id: session.id }}>
+                {session.date}
+              </Link>
+            </li>
           ))}
         </ul>
       )}
