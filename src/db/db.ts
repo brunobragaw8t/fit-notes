@@ -1,15 +1,12 @@
 import { Dexie, type EntityTable } from "dexie";
-
-export interface Exercise {
-  id: string;
-  name: string;
-  primaryMuscles: string[];
-}
+import type { Exercise, Session } from "./types";
 
 export const db = new Dexie("FitNotesDatabase") as Dexie & {
   exercises: EntityTable<Exercise, "id">;
+  sessions: EntityTable<Session, "id">;
 };
 
-db.version(2).stores({
+db.version(3).stores({
   exercises: "id, name",
+  sessions: "id, date",
 });
