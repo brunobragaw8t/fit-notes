@@ -1,4 +1,5 @@
-import { db, type Exercise } from "@/db/db";
+import { db } from "@/db/db";
+import type { Exercise } from "@/db/types";
 import exerciseData from "./exercises.json";
 
 const exercisesToSeed = exerciseData as Exercise[];
