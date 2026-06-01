@@ -2,6 +2,7 @@ import ExerciseRow from "@/components/exercise-row";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/db/db";
+import { searchAndGroupExercises } from "@/lib/group-exercises-by-muscle";
 import { createFileRoute } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
@@ -15,33 +16,17 @@ function RouteComponent() {
 
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
-  const searchLower = searchDebounced.toLowerCase();
 
   useEffect(() => {
     const t = setTimeout(() => setSearchDebounced(search), 150);
     return () => clearTimeout(t);
   }, [search]);
 
-  const exercises = exercisesRaw?.reduce<Record<string, typeof exercisesRaw>>((acc, ex) => {
-    if (
-      !ex.primaryMuscles[0].toLowerCase().includes(searchLower) &&
-      !ex.name.toLowerCase().includes(searchLower)
-    ) {
-      return acc;
-    }
-
-    const group = ex.primaryMuscles[0];
-
-    if (!acc[group]) acc[group] = [];
-
-    acc[group].push(ex);
-
-    return acc;
-  }, {});
+  const exercises = searchAndGroupExercises(exercisesRaw ?? [], search);
 
   return (
     <>
-      {!exercisesRaw || !exercises ? (
+      {!exercisesRaw ? (
         <div className="flex justify-center py-16">
           <Spinner />
         </div>
