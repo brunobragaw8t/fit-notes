@@ -2,7 +2,8 @@ import ExerciseRow from "@/components/exercise-row";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/db/db";
-import { searchAndGroupExercises } from "@/lib/group-exercises-by-muscle";
+import { groupExercisesByMuscle } from "@/lib/group-exercises-by-muscle";
+import { searchExercises } from "@/lib/search-exercises";
 import { createFileRoute } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
@@ -22,7 +23,8 @@ function RouteComponent() {
     return () => clearTimeout(t);
   }, [search]);
 
-  const exercises = searchAndGroupExercises(exercisesRaw ?? [], search);
+  const filtered = searchExercises(exercisesRaw ?? [], search);
+  const grouped = groupExercisesByMuscle(filtered);
 
   return (
     <>
@@ -44,7 +46,7 @@ function RouteComponent() {
               <Spinner />
             </div>
           ) : (
-            Object.entries(exercises).map(([group, items]) => (
+            Object.entries(grouped).map(([group, items]) => (
               <div key={group} className="">
                 <div className="mb-3 flex items-center gap-3">
                   <div className="bg-muted h-px flex-1" />

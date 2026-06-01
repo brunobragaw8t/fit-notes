@@ -1,6 +1,7 @@
 import { db } from "@/db/db";
 import type { Exercise } from "@/db/types";
-import { searchAndGroupExercises } from "@/lib/group-exercises-by-muscle";
+import { groupExercisesByMuscle } from "@/lib/group-exercises-by-muscle";
+import { searchExercises } from "@/lib/search-exercises";
 import { useEffect, useState } from "react";
 import {
   Command,
@@ -11,6 +12,9 @@ import {
   CommandList,
 } from "./ui/command";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Spinner } from "./ui/spinner";
+
+const MAX_VISIBLE_ITEMS = 100;
 
 type AddExerciseModalProps = {
   sessionId: string;
@@ -26,9 +30,15 @@ export default function AddExerciseModal({
   onOpenChange,
 }: AddExerciseModalProps) {
   const [search, setSearch] = useState("");
+  const [searchDebounced, setSearchDebounced] = useState("");
 
-  const searchLower = search.toLowerCase();
-  const grouped = searchAndGroupExercises(exercises, searchLower);
+  useEffect(() => {
+    const t = setTimeout(() => setSearchDebounced(search), 150);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const filtered = searchExercises(exercises, searchDebounced);
+  const grouped = groupExercisesByMuscle(filtered.slice(0, MAX_VISIBLE_ITEMS));
 
   async function handleSelect(exerciseId: string) {
     await db.exerciseEntries.add({
@@ -43,6 +53,7 @@ export default function AddExerciseModal({
 
   useEffect(() => {
     setSearch("");
+    setSearchDebounced("");
   }, [open]);
 
   return (
@@ -55,16 +66,32 @@ export default function AddExerciseModal({
           <DialogTitle>Add exercise</DialogTitle>
         </DialogHeader>
 
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search exercises..."
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList>
-            <CommandEmpty>No exercises found.</CommandEmpty>
 
-            {grouped &&
+          <CommandList>
+            {search.length === 0 && (
+              <div className="text-muted-foreground py-4 text-center text-sm">
+                Type to search exercises...
+              </div>
+            )}
+
+            {search.length > 0 && search !== searchDebounced && (
+              <div className="flex justify-center py-6">
+                <Spinner />
+              </div>
+            )}
+
+            {search.length > 0 && search === searchDebounced && filtered.length === 0 && (
+              <CommandEmpty>No exercises found.</CommandEmpty>
+            )}
+
+            {search.length > 0 &&
+              search === searchDebounced &&
               Object.entries(grouped).map(([group, items]) => (
                 <CommandGroup key={group} heading={group}>
                   {items.map((ex) => (
