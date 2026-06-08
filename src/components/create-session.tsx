@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import Fab from "./fab";
 import { Button } from "./ui/button";
 import {
@@ -17,6 +18,7 @@ import { Spinner } from "./ui/spinner";
 import { db } from "@/db/db";
 
 export default function CreateSession() {
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,10 +33,11 @@ export default function CreateSession() {
   async function handleNewSession(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
-    await db.sessions.add({ id: crypto.randomUUID(), date });
-    setDialogOpen(false);
-    setIsLoading(false);
-    setDate(new Date().toISOString().slice(0, 10));
+
+    const id = crypto.randomUUID();
+    await db.sessions.add({ id, date });
+
+    navigate({ to: "/sessions/$id", params: { id } });
   }
 
   return (
