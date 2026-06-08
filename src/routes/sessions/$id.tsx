@@ -29,6 +29,10 @@ function RouteComponent() {
 
   const { weekday, day, month, year } = formatDate(session.date);
 
+  async function handleDeleteExerciseEntry(id: string) {
+    await db.exerciseEntries.delete(id);
+  }
+
   return (
     <>
       <header>
@@ -74,9 +78,18 @@ function RouteComponent() {
                 className="bg-card border-muted flex items-center gap-3 rounded-lg border p-3"
               >
                 <Dumbbell size={16} className="text-muted-foreground shrink-0" />
-                <span className="text-sm font-medium">
+
+                <span className="flex-1 text-sm font-medium">
                   {exerciseMap.get(entry.exerciseId) ?? "Unknown"}
                 </span>
+
+                <Button
+                  size="icon-xs"
+                  variant="ghost"
+                  onClick={() => handleDeleteExerciseEntry(entry.id)}
+                >
+                  <Trash2 />
+                </Button>
               </li>
             ))}
           </ul>
