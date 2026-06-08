@@ -1,4 +1,5 @@
 import AddExerciseModal from "@/components/add-exercise-modal";
+import DeleteSession from "@/components/delete-session";
 import Fab from "@/components/fab";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db/db";
@@ -51,13 +52,7 @@ function RouteComponent() {
             <span className="text-muted-foreground text-xs">{year}</span>
           </div>
 
-          <Button
-            variant="destructive"
-            size="icon-lg"
-            onClick={() => console.log("Delete session")}
-          >
-            <Trash2 size={15} />
-          </Button>
+          <DeleteSession sessionId={id} />
         </div>
 
         <div className="via-muted h-px bg-linear-to-r from-transparent to-transparent" />
