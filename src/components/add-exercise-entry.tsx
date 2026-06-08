@@ -11,24 +11,23 @@ import {
   CommandItem,
   CommandList,
 } from "./ui/command";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Spinner } from "./ui/spinner";
+import Fab from "./fab";
 
 const MAX_VISIBLE_ITEMS = 100;
 
-type AddExerciseModalProps = {
+type AddExerciseEntryProps = {
   sessionId: string;
   exercises: Exercise[];
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
 };
 
-export default function AddExerciseModal({
-  sessionId,
-  exercises,
-  open,
-  onOpenChange,
-}: AddExerciseModalProps) {
+export default function AddExerciseEntry({ sessionId, exercises }: AddExerciseEntryProps) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  function handleOpenChange(open: boolean) {
+    setDialogOpen(open);
+  }
+
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
 
@@ -47,19 +46,22 @@ export default function AddExerciseModal({
       sessionId,
       exerciseId,
       order: count,
-      sets: [],
     });
 
-    onOpenChange(false);
+    handleOpenChange(false);
   }
 
   useEffect(() => {
     setSearch("");
     setSearchDebounced("");
-  }, [open]);
+  }, [dialogOpen]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Fab />
+      </DialogTrigger>
+
       <DialogContent
         className="top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0"
         aria-describedby={undefined}

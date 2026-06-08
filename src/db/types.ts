@@ -4,8 +4,12 @@ export interface Exercise {
   primaryMuscles: string[];
 }
 
+// ExerciseSet instead of Set
+// to prevent name collision with JavaScript's Set
 export interface ExerciseSet {
   id: string;
+  entryId: string;
+  order: number;
   weight: number;
   reps: number;
 }
@@ -15,7 +19,6 @@ export interface ExerciseEntry {
   sessionId: string;
   exerciseId: string;
   order: number;
-  sets: ExerciseSet[];
 }
 
 export interface Session {
