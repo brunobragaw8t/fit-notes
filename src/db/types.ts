@@ -14,6 +14,7 @@ export interface ExerciseEntry {
   id: string;
   sessionId: string;
   exerciseId: string;
+  order: number;
   sets: ExerciseSet[];
 }
 

@@ -20,7 +20,7 @@ function RouteComponent() {
   const exerciseMap = new Map(exercises?.map((ex) => [ex.id, ex.name]));
 
   const exerciseEntries = useLiveQuery(
-    () => db.exerciseEntries.where("sessionId").equals(id).toArray(),
+    () => db.exerciseEntries.where("sessionId").equals(id).sortBy("order"),
     [id],
   );
   const [modalOpen, setModalOpen] = useState(false);
