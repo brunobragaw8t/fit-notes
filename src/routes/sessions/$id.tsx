@@ -2,6 +2,15 @@ import type { ExerciseSet } from "@/db/types";
 import AddExerciseEntry from "@/components/add-exercise-entry";
 import DeleteSession from "@/components/delete-session";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { db } from "@/db/db";
 import { formatDate } from "@/lib/format-date";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -80,6 +89,14 @@ function RouteComponent() {
     await db.sets.delete(id);
   }
 
+  async function handleUpdateWeight(id: string, weight: number) {
+    await db.sets.update(id, { weight });
+  }
+
+  async function handleUpdateReps(id: string, reps: number) {
+    await db.sets.update(id, { reps });
+  }
+
   if (!session) return <div>Session not found</div>;
 
   return (
@@ -133,35 +150,63 @@ function RouteComponent() {
                   </Button>
                 </div>
 
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Weight</th>
-                      <th>Reps</th>
-                      <th></th>
-                    </tr>
-                  </thead>
+                <div className="flex flex-col gap-2 p-3">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-muted-foreground text-center text-xs">
+                          #
+                        </TableHead>
 
-                  <tbody>
-                    {(setsByEntryId.get(entry.id) ?? []).map((set) => (
-                      <tr key={set.id}>
-                        <td>{set.weight}</td>
-                        <td>{set.reps}</td>
-                        <td>
-                          <Button
-                            variant="ghost"
-                            size="icon-xs"
-                            onClick={() => handleDeleteSet(set.id)}
-                          >
-                            <Minus />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        <TableHead className="text-muted-foreground text-center text-xs">
+                          Weight
+                        </TableHead>
 
-                <div className="p-3">
+                        <TableHead className="text-muted-foreground text-center text-xs">
+                          Reps
+                        </TableHead>
+
+                        <TableHead className="w-12" />
+                      </TableRow>
+                    </TableHeader>
+
+                    <TableBody>
+                      {(setsByEntryId.get(entry.id) ?? []).map((set) => (
+                        <TableRow key={set.id}>
+                          <TableCell className="text-muted-foreground text-center text-xs">
+                            {set.order}
+                          </TableCell>
+
+                          <TableCell>
+                            <Input
+                              value={set.weight}
+                              onChange={(e) => handleUpdateWeight(set.id, Number(e.target.value))}
+                              className="text-center"
+                            />
+                          </TableCell>
+
+                          <TableCell className="text-center">
+                            <Input
+                              value={set.reps}
+                              onChange={(e) => handleUpdateReps(set.id, Number(e.target.value))}
+                              className="text-center"
+                            />
+                          </TableCell>
+
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="icon-xs"
+                              onClick={() => handleDeleteSet(set.id)}
+                            >
+                              <Minus />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+
                   <Button
                     variant="outline"
                     size="sm"
