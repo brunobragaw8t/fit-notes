@@ -6,7 +6,7 @@ import { db } from "@/db/db";
 import { formatDate } from "@/lib/format-date";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
-import { ArrowLeft, Dumbbell, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Dumbbell, Minus, Plus, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/sessions/$id")({
   component: RouteComponent,
@@ -76,6 +76,10 @@ function RouteComponent() {
     });
   }
 
+  async function handleDeleteSet(id: string) {
+    await db.sets.delete(id);
+  }
+
   if (!session) return <div>Session not found</div>;
 
   return (
@@ -134,13 +138,24 @@ function RouteComponent() {
                     <tr>
                       <th>Weight</th>
                       <th>Reps</th>
+                      <th></th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {(setsByEntryId.get(entry.id) ?? []).map((set) => (
                       <tr key={set.id}>
                         <td>{set.weight}</td>
                         <td>{set.reps}</td>
+                        <td>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => handleDeleteSet(set.id)}
+                          >
+                            <Minus />
+                          </Button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
