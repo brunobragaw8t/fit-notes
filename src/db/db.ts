@@ -8,9 +8,9 @@ export const db = new Dexie("FitNotesDatabase") as Dexie & {
   sets: EntityTable<ExerciseSet, "id">;
 };
 
-db.version(8).stores({
+db.version(9).stores({
   exercises: "id, name",
   sessions: "id, date",
-  exerciseEntries: "id, sessionId",
+  exerciseEntries: "id, sessionId, exerciseId",
   sets: "id, entryId",
 });
