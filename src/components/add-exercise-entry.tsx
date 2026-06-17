@@ -62,11 +62,8 @@ export default function AddExerciseEntry({ sessionId, exercises }: AddExerciseEn
         <Fab />
       </DialogTrigger>
 
-      <DialogContent
-        className="top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0"
-        aria-describedby={undefined}
-      >
-        <DialogHeader className="sr-only">
+      <DialogContent aria-describedby={undefined}>
+        <DialogHeader>
           <DialogTitle>Add exercise</DialogTitle>
         </DialogHeader>
 
@@ -78,18 +75,6 @@ export default function AddExerciseEntry({ sessionId, exercises }: AddExerciseEn
           />
 
           <CommandList>
-            {search.length === 0 && (
-              <div className="text-muted-foreground py-4 text-center text-sm">
-                Type to search exercises...
-              </div>
-            )}
-
-            {search.length > 0 && search !== searchDebounced && (
-              <div className="flex justify-center py-6">
-                <Spinner />
-              </div>
-            )}
-
             {search.length > 0 && search === searchDebounced && filtered.length === 0 && (
               <CommandEmpty>No exercises found.</CommandEmpty>
             )}
@@ -107,6 +92,18 @@ export default function AddExerciseEntry({ sessionId, exercises }: AddExerciseEn
               ))}
           </CommandList>
         </Command>
+
+        {search.length === 0 && (
+          <div className="text-muted-foreground text-center text-xs">
+            Type to search exercises...
+          </div>
+        )}
+
+        {search.length > 0 && search !== searchDebounced && (
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
