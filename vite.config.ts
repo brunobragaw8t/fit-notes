@@ -23,6 +23,7 @@ export default defineConfig({
       manifest: {
         name: "Fit Notes",
         short_name: "Fit Notes",
+        theme_color: "#09090b",
         icons: [
           {
             src: "/favicon.svg",
