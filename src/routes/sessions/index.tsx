@@ -1,7 +1,8 @@
 import CreateSession from "@/components/create-session";
+import Session from "@/components/session";
 import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/db/db";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const Route = createFileRoute("/sessions/")({
@@ -20,15 +21,11 @@ function RouteComponent() {
           <Spinner />
         </div>
       ) : (
-        <ul>
+        <div className="flex flex-col gap-3">
           {sessions.map((session) => (
-            <li key={session.id}>
-              <Link to="/sessions/$id" params={{ id: session.id }}>
-                {session.date}
-              </Link>
-            </li>
+            <Session session={session} key={session.id} />
           ))}
-        </ul>
+        </div>
       )}
     </>
   );
