@@ -53,13 +53,15 @@ export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps
   }
 
   async function handleAddSet() {
-    const count = await db.sets.where("entryId").equals(entry.id).count();
+    const sets = await db.sets.where("entryId").equals(entry.id).sortBy("order");
+
+    const weight = sets.length ? sets.at(-1)!.weight : 0;
 
     await db.sets.add({
       id: crypto.randomUUID(),
       entryId: entry.id,
-      order: count,
-      weight: 0,
+      order: sets.length,
+      weight,
       reps: 0,
     });
   }
