@@ -40,12 +40,14 @@ export default function AddExerciseEntry({ sessionId, exercises }: AddExerciseEn
   const grouped = groupExercisesByMuscle(filtered.slice(0, MAX_VISIBLE_ITEMS));
 
   async function handleSelect(exerciseId: string) {
-    const count = await db.exerciseEntries.where("sessionId").equals(sessionId).count();
+    const entries = await db.exerciseEntries.where("sessionId").equals(sessionId).toArray();
+    const maxOrder = entries.reduce((max, entry) => Math.max(max, entry.order), 0);
+
     await db.exerciseEntries.add({
       id: crypto.randomUUID(),
       sessionId,
       exerciseId,
-      order: count,
+      order: maxOrder + 1,
     });
 
     handleOpenChange(false);
