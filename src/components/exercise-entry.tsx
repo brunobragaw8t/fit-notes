@@ -52,10 +52,22 @@ export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps
     await db.exerciseEntries.delete(entry.id);
   }
 
+  function getNextSetWeight(sets: ExerciseSet[] | undefined) {
+    if (!sets && previousSetsForThisExercise && previousSetsForThisExercise.length) {
+      return previousSetsForThisExercise.at(-1)!.weight;
+    }
+
+    if (!sets || !sets.length) {
+      return 0;
+    }
+
+    return sets.at(-1)!.weight;
+  }
+
   async function handleAddSet() {
     const maxOrder =
       sets && sets.length ? sets.reduce((max, set) => Math.max(max, set.order), 0) : 0;
-    const weight = sets && sets.length ? sets.at(-1)!.weight : 0;
+    const weight = getNextSetWeight(sets);
 
     await db.sets.add({
       id: crypto.randomUUID(),
