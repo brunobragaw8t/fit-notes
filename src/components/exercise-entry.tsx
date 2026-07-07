@@ -1,10 +1,10 @@
 import { db } from "@/db/db";
 import type { ExerciseEntry, ExerciseSet, Session } from "@/db/types";
-import { Dumbbell, Minus, Plus, Trash2 } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import { useLiveQuery } from "dexie-react-hooks";
+import { Dumbbell, Minus, Plus, Trash2 } from "lucide-react";
+import { NumberInput } from "./number-input";
+import { Button } from "./ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 
 interface ExerciseEntryProps {
   session: Session;
@@ -128,19 +128,17 @@ export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps
                   </TableCell>
 
                   <TableCell>
-                    <Input
-                      type="number"
+                    <NumberInput
                       value={set.weight}
-                      onChange={(e) => handleUpdateSetWeight(set.id, Number(e.target.value))}
+                      onBlur={(v) => handleUpdateSetWeight(set.id, v)}
                       className="text-center"
                     />
                   </TableCell>
 
-                  <TableCell className="text-center">
-                    <Input
-                      type="number"
+                  <TableCell>
+                    <NumberInput
                       value={set.reps}
-                      onChange={(e) => handleUpdateSetReps(set.id, Number(e.target.value))}
+                      onBlur={(v) => handleUpdateSetReps(set.id, v)}
                       className="text-center"
                     />
                   </TableCell>
