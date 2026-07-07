@@ -129,6 +129,7 @@ export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps
 
                   <TableCell>
                     <Input
+                      type="number"
                       value={set.weight}
                       onChange={(e) => handleUpdateSetWeight(set.id, Number(e.target.value))}
                       className="text-center"
@@ -137,6 +138,7 @@ export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps
 
                   <TableCell className="text-center">
                     <Input
+                      type="number"
                       value={set.reps}
                       onChange={(e) => handleUpdateSetReps(set.id, Number(e.target.value))}
                       className="text-center"
