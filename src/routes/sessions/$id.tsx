@@ -40,6 +40,11 @@ function RouteComponent() {
   );
   const entriesIds = entries?.map((e) => e.id) ?? [];
 
+  function handleUpdateEntryOrder(id: string, order: number) {
+    if (order < 0 || order === entries?.length) return;
+    db.exerciseEntries.update(id, { order });
+  }
+
   /**
    * Sets
    */
@@ -101,6 +106,7 @@ function RouteComponent() {
                 key={entry.id}
                 session={session}
                 entry={entry}
+                onUpdateEntryOrder={handleUpdateEntryOrder}
                 name={exerciseMap.get(entry.exerciseId) ?? "Unknown"}
                 sets={setsByEntryId.get(entry.id)}
               />

@@ -1,7 +1,7 @@
 import { db } from "@/db/db";
 import type { ExerciseEntry, ExerciseSet, Session } from "@/db/types";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Dumbbell, Minus, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Dumbbell, Minus, Plus, Trash2 } from "lucide-react";
 import { NumberInput } from "./number-input";
 import { Button } from "./ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
@@ -9,11 +9,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 interface ExerciseEntryProps {
   session: Session;
   entry: ExerciseEntry;
+  onUpdateEntryOrder: (id: string, order: number) => void;
   name: string;
   sets?: ExerciseSet[];
 }
 
-export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps) {
+export function ExerciseEntry({
+  session,
+  entry,
+  name,
+  sets,
+  onUpdateEntryOrder,
+}: ExerciseEntryProps) {
   const previousSetsForThisExercise = useLiveQuery(async () => {
     const otherEntriesForThisExercise = await db.exerciseEntries
       .where("exerciseId")
@@ -96,6 +103,22 @@ export function ExerciseEntry({ session, entry, name, sets }: ExerciseEntryProps
         <Dumbbell size={16} className="text-muted-foreground shrink-0" />
 
         <span className="flex-1 text-sm font-medium">{name}</span>
+
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          onClick={() => onUpdateEntryOrder(entry.id, entry.order - 1)}
+        >
+          <ArrowUp />
+        </Button>
+
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          onClick={() => onUpdateEntryOrder(entry.id, entry.order + 1)}
+        >
+          <ArrowDown />
+        </Button>
 
         <Button size="icon-xs" variant="ghost" onClick={handleDeleteEntry}>
           <Trash2 />
