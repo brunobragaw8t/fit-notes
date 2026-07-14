@@ -8,14 +8,14 @@ interface NumberInputProps {
 }
 
 export function NumberInput({ value, onBlur, className }: NumberInputProps) {
-  const [text, setText] = useState(value);
+  const [text, setText] = useState(String(value));
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = Number(e.target.value);
 
     if (isNaN(value)) return;
 
-    setText(value);
+    setText(String(value));
   }
 
   return (
